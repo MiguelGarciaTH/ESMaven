@@ -1,16 +1,17 @@
 package main;
 
+import sql.SQL;
 import sql.mysql.MySQL;
 
 public class Main {
     public static void main(String[] args) {
-        MySQL mySQL = new MySQL();
-        mySQL.connect("es_maven", "es_maven", "es_maven");
+        SQL mySQL = new MySQL();
+        mySQL.connectDB("es_maven", "es_maven", "es_maven");
 
-        System.out.println(mySQL.select("miguel"));
-        mySQL.insert("userTeste", "passTest");
+        System.out.println(mySQL.selectUser("miguel"));
+        mySQL.insertUser("userTeste", "passTest");
 
-        System.out.println(mySQL.select("userTeste"));
-        mySQL.disconnect();
+        System.out.println(mySQL.selectUser("userTeste"));
+        mySQL.disconnectDB();
     }
 }

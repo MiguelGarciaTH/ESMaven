@@ -9,11 +9,11 @@ public class MySQLTest {
 
     @org.junit.jupiter.api.Test
     void select() {
-        MySQL sql = new MySQL();
-        sql.connect("es_maven", "es_maven", "es_maven");
-        sql.insert("teste", "teste");
-        String res = sql.select("teste");
+        SQL sql = new MySQL();
+        sql.connectDB("es_maven", "es_maven", "es_maven");
+        sql.insertUser("teste", "teste");
+        String res = sql.selectUser("teste");
         assertEquals("username: teste\tpassword: teste\n", res, "Return user teste and password test");
-        sql.delete("teste");
+        sql.deleteUser("teste");
     }
 }

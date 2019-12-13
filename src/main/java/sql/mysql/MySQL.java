@@ -1,14 +1,16 @@
 package sql.mysql;
 
+import sql.SQL;
+
 import java.sql.*;
 
-public class MySQL {
+public class MySQL implements SQL {
     private Connection con;
     public MySQL(){
 
     }
 
-    public boolean connect(String databaseName, String username, String password) {
+    public boolean connectDB(String databaseName, String username, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + databaseName, username, password);
@@ -18,7 +20,7 @@ public class MySQL {
         }
         return false;
     }
-    public boolean disconnect(){
+    public boolean disconnectDB(){
         try {
             con.close();
             return con.isClosed();
@@ -27,7 +29,7 @@ public class MySQL {
         }
         return true;
     }
-    public String select(String username){
+    public String selectUser(String username){
         StringBuilder builder = new StringBuilder();
         PreparedStatement stmt = null;
         try {
@@ -44,7 +46,7 @@ public class MySQL {
         return "empty";
    }
 
-   public void delete(String username){
+   public void deleteUser(String username){
        PreparedStatement stmt = null;
        try {
            stmt = con.prepareStatement(" DELETE FROM user_t WHERE username like ?;");
@@ -56,7 +58,7 @@ public class MySQL {
 
    }
 
-    public void insert(String username, String password){
+    public void insertUser(String username, String password){
        PreparedStatement stmt = null;
        try {
            stmt = con.prepareStatement(" insert into user_t (username, password) values (?, ?)");
