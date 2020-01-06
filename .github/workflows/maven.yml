@@ -15,9 +15,6 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
-	deploy: 
-    steps:
 		- name: Deploy with Maven
-		run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
+			run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
 	
