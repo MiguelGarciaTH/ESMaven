@@ -18,11 +18,26 @@ jobs:
 		- name: Deploy with Maven
 			run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
 
-	deploy:
-
-    runs-on: ubuntu-latest
-
+	  deploy: 
+    runs-on: ubuntu-latest  
+    needs: build 
+    name: Build Docker container and deploy to Kubernetes
     steps:
-		- name: Deploy with Maven
-			run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
-	
+    - uses: actions/checkout@v1
+    - name: Download Maven build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: artifact
+    - name: Build Docker container
+      run: |
+        mkdir -p github-actions-java-maven/target
+        mv artifact/github-actions-java-maven.jar github-actions-java-maven/target
+        docker build -t de.rieckpil.blog/github-actions-sample github-actions-java-maven
+    - name: Access secrets
+      env: 
+        SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+      run: echo "Content of secret - $SUPER_SECRET"
+    - name: Push Docker images
+      run: echo "Pushing Docker image to Container Registry (e.g. ECR)"
+    - name: Deploy application
+      run: echo "Deploying application (e.g. Kubernetes)"
