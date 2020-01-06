@@ -17,4 +17,12 @@ jobs:
       run: mvn -B package --file pom.xml
 		- name: Deploy with Maven
 			run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
+
+	deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+		- name: Deploy with Maven
+			run: mvn deploy -Dregistry=https://maven.pkg.github.com/MiguelGarciaTH -Dtoken=GH_TOKEN
 	
