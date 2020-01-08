@@ -9,11 +9,8 @@ import es_project.model.Model;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
+import java.awt.event.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,8 +19,8 @@ public class ProjectGUI {
     private JTabbedPane tabbedPane;
     private JPanel UserTab;
     private JPanel AdminTab;
-    private JComboBox marcaComboBox;
-    private JComboBox modeloComboBox;
+    private JComboBox<String> marcaComboBox;
+    private JComboBox<String> modeloComboBox;
     private JButton procurarButton;
     private JLabel marcaLabel;
     private JTable resultsTable;
@@ -40,17 +37,21 @@ public class ProjectGUI {
     private JButton SendButton;
     private JTextField chatInputTextField;
     private JButton comprarButton;
-    private JComboBox modosPagamentoComboBox;
-    private JComboBox marcaInsertComboBox;
+    private JComboBox<String> modosPagamentoComboBox;
+    private JComboBox<String> marcaInsertComboBox;
     private JTextField adminMarcaInsertTextBox;
-    private JComboBox modeloInsertComboBox;
+    private JComboBox<String> modeloInsertComboBox;
     private JTextField adminModeloInsertTextBox;
     private JTextField adminCilindradaInsertTextBox;
     private JTextField adminCavaloInsertTextBox;
+    private JTextField adminQuilometrosInsertTextBox;
     private JTextField adminPrecoInsertTextBox;
     private JTextField adminAnoInserText;
     private JButton inserirButton;
     private JPanel attributePanel;
+    private JTextField quilometrosText;
+    private JComboBox<String> adminCombustivelComboBox;
+    private JTextField combustivelField;
     private Model model;
 
 
@@ -58,6 +59,7 @@ public class ProjectGUI {
         this.model = model;
         brandComboBox(marcaComboBox);
         brandComboBox(marcaInsertComboBox);
+        combustivelComboBox(adminCombustivelComboBox);
 
         modosPagamentoComboBox.setEnabled(false);
         LinkedList<String> paymentList = model.getAllPaymentMethods();
@@ -73,6 +75,7 @@ public class ProjectGUI {
         detalhes.setEnabled(false);
         comprarButton.setEnabled(false);
         modeloComboBox.setEnabled(false);
+
 
         procurarButton.addActionListener(new ActionListener() {
             @Override
@@ -93,6 +96,8 @@ public class ProjectGUI {
                 components.put("horsepower", cavalosText);
                 components.put("price", precoText);
                 components.put("date", anoText);
+                components.put("combustivel", combustivelField);
+                components.put("kilometers", quilometrosText);
                 model.getVehiclesAttributes(components, Integer.parseInt(carIDField.getText()));
             }
         });
@@ -144,28 +149,43 @@ public class ProjectGUI {
 
         inserirButton.addActionListener(new ActionListener() {
             @Override
+            //String brand, String model, String price, String horsepower, String cylinders, String kilometers, String date, String fueltype) {
             public void actionPerformed(ActionEvent e) {
-                model.createVehicle(adminMarcaInsertTextBox.getText(),
+                model.createVehicle(
+                        adminMarcaInsertTextBox.getText(),
                         adminModeloInsertTextBox.getText(),
                         adminPrecoInsertTextBox.getText(),
                         adminCavaloInsertTextBox.getText(),
                         adminCilindradaInsertTextBox.getText(),
-                        adminAnoInserText.getText());
+                        adminQuilometrosInsertTextBox.getText(),
+                        adminAnoInserText.getText(),
+                        adminCombustivelComboBox.getSelectedItem().toString()
+                );
             }
         });
+
+
     }
 
-    private void brandComboBox(JComboBox combo) {
+    private void brandComboBox(JComboBox<String> combo) {
         LinkedList<String> list = model.getAllCarBrands();
         for (String marca : list) {
             combo.addItem(marca);
         }
     }
 
-    private void modelComboBox(JComboBox combo, String brand) {
-        LinkedList<String> list = model.getAllCarModels(brand);
+    private void modelComboBox(JComboBox<String> combo, String brand) {
+        combo.removeAllItems();
+        Set<String> list = new HashSet<>(model.getAllCarModels(brand));
         for (String brand1 : list) {
             combo.addItem(brand1);
+        }
+    }
+
+    private void combustivelComboBox(JComboBox<String> combo) {
+        LinkedList<String> list = model.getAllFuels();
+        for (String type : list) {
+            combo.addItem(type);
         }
     }
 
@@ -173,15 +193,15 @@ public class ProjectGUI {
         double price = model.getCarPrice(Integer.parseInt(carIDField.getText()));
         Pattern p = Pattern.compile("(\\d+(?:\\.\\d+))");
         Matcher m = p.matcher(input);
-        String answer = "Faça uma proposta de valor sff.";
+        String answer = "Vendedor: Faça uma proposta de valor sff.";
         boolean aceito = false;
         while (m.find()) {
             double d = Double.parseDouble(m.group(1));
             if (d < price) {
-                answer = "Muito baixo o carro vale " + price;
+                answer = "Vendedor: Muito baixo o carro vale " + price;
             }
             if (d >= price || d >= (price - (price * 0.1))) {
-                answer = "Aceito!";
+                answer = "Vendedor: Aceito!";
                 aceito = true;
             }
         }
@@ -256,7 +276,7 @@ public class ProjectGUI {
         tabbedPane.addTab("Compra", AdminTab);
         AdminTab.setBorder(BorderFactory.createTitledBorder(""));
         attributePanel = new JPanel();
-        attributePanel.setLayout(new GridLayoutManager(6, 2, new Insets(0, 0, 0, 0), -1, -1));
+        attributePanel.setLayout(new GridLayoutManager(8, 2, new Insets(0, 0, 0, 0), -1, -1));
         AdminTab.add(attributePanel, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Marca");
@@ -277,19 +297,30 @@ public class ProjectGUI {
         attributePanel.add(cilindradaText, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label6 = new JLabel();
         label6.setText("Cavalos");
-        attributePanel.add(label6, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        attributePanel.add(label6, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         cavalosText = new JTextField();
         attributePanel.add(cavalosText, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label7 = new JLabel();
         label7.setText("Preço");
-        attributePanel.add(label7, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        attributePanel.add(label7, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         precoText = new JTextField();
+        precoText.setText("");
         attributePanel.add(precoText, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label8 = new JLabel();
         label8.setText("Ano");
-        attributePanel.add(label8, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        attributePanel.add(label8, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         anoText = new JTextField();
-        attributePanel.add(anoText, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        attributePanel.add(anoText, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label9 = new JLabel();
+        label9.setText("Quilometros");
+        attributePanel.add(label9, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        quilometrosText = new JTextField();
+        attributePanel.add(quilometrosText, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label10 = new JLabel();
+        label10.setText("Combustivel");
+        attributePanel.add(label10, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        combustivelField = new JTextField();
+        attributePanel.add(combustivelField, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(2, 5, new Insets(0, 0, 0, 0), -1, -1));
         AdminTab.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -316,56 +347,66 @@ public class ProjectGUI {
         panel4.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         tabbedPane.addTab("Admin", panel4);
         final JPanel panel5 = new JPanel();
-        panel5.setLayout(new GridLayoutManager(7, 7, new Insets(0, 0, 0, 0), -1, -1));
+        panel5.setLayout(new GridLayoutManager(9, 7, new Insets(0, 0, 0, 0), -1, -1));
         panel4.add(panel5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, 1, null, null, null, 0, false));
-        final JLabel label9 = new JLabel();
-        label9.setText("Marca");
-        panel5.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label11 = new JLabel();
+        label11.setText("Marca");
+        panel5.add(label11, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         marcaInsertComboBox = new JComboBox();
         panel5.add(marcaInsertComboBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminMarcaInsertTextBox = new JTextField();
         panel5.add(adminMarcaInsertTextBox, new GridConstraints(0, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label10 = new JLabel();
-        label10.setText("Modelo");
-        panel5.add(label10, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label12 = new JLabel();
+        label12.setText("Modelo");
+        panel5.add(label12, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         modeloInsertComboBox = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         modeloInsertComboBox.setModel(defaultComboBoxModel2);
         panel5.add(modeloInsertComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminModeloInsertTextBox = new JTextField();
         panel5.add(adminModeloInsertTextBox, new GridConstraints(1, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label11 = new JLabel();
-        label11.setText("Cilindrada");
-        panel5.add(label11, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label13 = new JLabel();
+        label13.setText("Cilindrada");
+        panel5.add(label13, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminCilindradaInsertTextBox = new JTextField();
         panel5.add(adminCilindradaInsertTextBox, new GridConstraints(2, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label12 = new JLabel();
-        label12.setText("Cavalos");
-        panel5.add(label12, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label14 = new JLabel();
+        label14.setText("Cavalos");
+        panel5.add(label14, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminCavaloInsertTextBox = new JTextField();
         panel5.add(adminCavaloInsertTextBox, new GridConstraints(3, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label13 = new JLabel();
-        label13.setText("Preço");
-        panel5.add(label13, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label15 = new JLabel();
+        label15.setText("Preço");
+        panel5.add(label15, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminPrecoInsertTextBox = new JTextField();
         panel5.add(adminPrecoInsertTextBox, new GridConstraints(4, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label14 = new JLabel();
-        label14.setText("Ano");
-        panel5.add(label14, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label16 = new JLabel();
+        label16.setText("Ano");
+        panel5.add(label16, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         adminAnoInserText = new JTextField();
-        panel5.add(adminAnoInserText, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        panel5.add(adminAnoInserText, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         inserirButton = new JButton();
         inserirButton.setText("Inserir");
-        panel5.add(inserirButton, new GridConstraints(6, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label15 = new JLabel();
-        label15.setText("(yyyy-MM-dd)");
-        panel5.add(label15, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel5.add(inserirButton, new GridConstraints(8, 2, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label17 = new JLabel();
+        label17.setText("(yyyy-MM-dd)");
+        panel5.add(label17, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel5.add(spacer1, new GridConstraints(5, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel5.add(spacer1, new GridConstraints(6, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        panel5.add(spacer2, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel5.add(spacer2, new GridConstraints(6, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
-        panel5.add(spacer3, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel5.add(spacer3, new GridConstraints(6, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final JLabel label18 = new JLabel();
+        label18.setText("Quilometros");
+        panel5.add(label18, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        adminQuilometrosInsertTextBox = new JTextField();
+        panel5.add(adminQuilometrosInsertTextBox, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label19 = new JLabel();
+        label19.setText("Combustivel");
+        panel5.add(label19, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        adminCombustivelComboBox = new JComboBox();
+        panel5.add(adminCombustivelComboBox, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel4.add(panel6, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));

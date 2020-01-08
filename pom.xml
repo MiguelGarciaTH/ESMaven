@@ -8,17 +8,12 @@
     <artifactId>ESMaven</artifactId>
     <version>1.0</version>
     <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.4.2</version>
-            <scope>test</scope>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.18</version>
+            <type>jar</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -61,7 +56,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.Main</mainClass>
+                            <mainClass>es_project.ProjectMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -71,11 +66,4 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub OWNER Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/MiguelGarciaTH</url>
-        </repository>
-    </distributionManagement>
 </project>

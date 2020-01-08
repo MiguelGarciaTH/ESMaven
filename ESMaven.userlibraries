@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="Maven: asm:asm-commons:2.2.3">
+    <archive path="/home/miguel/.m2/repository/asm/asm-commons/2.2.3/asm-commons-2.2.3.jar" />
+  </library>
+  <library name="Maven: asm:asm-tree:2.2.3">
+    <archive path="/home/miguel/.m2/repository/asm/asm-tree/2.2.3/asm-tree-2.2.3.jar" />
+  </library>
+  <library name="Maven: asm:asm:2.2.3">
+    <archive path="/home/miguel/.m2/repository/asm/asm/2.2.3/asm-2.2.3.jar" />
+  </library>
+  <library name="Maven: com.google.protobuf:protobuf-java:3.6.1">
+    <archive path="/home/miguel/.m2/repository/com/google/protobuf/protobuf-java/3.6.1/protobuf-java-3.6.1.jar" />
+  </library>
+  <library name="Maven: com.intellij:forms_rt:6.0.5">
+    <archive path="/home/miguel/.m2/repository/com/intellij/forms_rt/6.0.5/forms_rt-6.0.5.jar" />
+  </library>
+  <library name="Maven: com.jgoodies:forms:1.0.7">
+    <archive path="/home/miguel/.m2/repository/com/jgoodies/forms/1.0.7/forms-1.0.7.jar" />
+  </library>
+  <library name="Maven: jdom:jdom:1.0">
+    <archive path="/home/miguel/.m2/repository/jdom/jdom/1.0/jdom-1.0.jar" />
+  </library>
+  <library name="Maven: mysql:mysql-connector-java:8.0.18">
+    <archive path="/home/miguel/.m2/repository/mysql/mysql-connector-java/8.0.18/mysql-connector-java-8.0.18.jar" />
+  </library>
+  <library name="Maven: org.apiguardian:apiguardian-api:1.0.0">
+    <archive path="/home/miguel/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" />
+  </library>
+  <library name="Maven: org.junit.jupiter:junit-jupiter-api:5.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.4.2/junit-jupiter-api-5.4.2.jar" />
+  </library>
+  <library name="Maven: org.junit.jupiter:junit-jupiter-engine:5.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.4.2/junit-jupiter-engine-5.4.2.jar" />
+  </library>
+  <library name="Maven: org.junit.jupiter:junit-jupiter-params:5.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.4.2/junit-jupiter-params-5.4.2.jar" />
+  </library>
+  <library name="Maven: org.junit.jupiter:junit-jupiter:5.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/jupiter/junit-jupiter/5.4.2/junit-jupiter-5.4.2.jar" />
+  </library>
+  <library name="Maven: org.junit.platform:junit-platform-commons:1.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/platform/junit-platform-commons/1.4.2/junit-platform-commons-1.4.2.jar" />
+  </library>
+  <library name="Maven: org.junit.platform:junit-platform-engine:1.4.2">
+    <archive path="/home/miguel/.m2/repository/org/junit/platform/junit-platform-engine/1.4.2/junit-platform-engine-1.4.2.jar" />
+  </library>
+  <library name="Maven: org.opentest4j:opentest4j:1.1.1">
+    <archive path="/home/miguel/.m2/repository/org/opentest4j/opentest4j/1.1.1/opentest4j-1.1.1.jar" />
+  </library>
+</eclipse-userlibraries>
+

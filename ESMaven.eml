@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component LANGUAGE_LEVEL="JDK_1_8" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/target/test-classes"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
+		<excludeFolder url="file://$MODULE_DIR$/target"/>
+	</contentEntry>
+	<lib name="Maven: mysql:mysql-connector-java:8.0.18" scope="RUNTIME"/>
+	<lib name="Maven: com.google.protobuf:protobuf-java:3.6.1" scope="RUNTIME"/>
+	<levels>
+		<level name="Maven: mysql:mysql-connector-java:8.0.18" value="project"/>
+		<level name="Maven: com.google.protobuf:protobuf-java:3.6.1" value="project"/>
+		<level name="Maven: com.intellij:forms_rt:6.0.5" value="project"/>
+		<level name="Maven: asm:asm-commons:2.2.3" value="project"/>
+		<level name="Maven: asm:asm-tree:2.2.3" value="project"/>
+		<level name="Maven: asm:asm:2.2.3" value="project"/>
+		<level name="Maven: com.jgoodies:forms:1.0.7" value="project"/>
+		<level name="Maven: jdom:jdom:1.0" value="project"/>
+	</levels>
+</component>
