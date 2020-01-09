@@ -2,6 +2,7 @@
 
 ## Setup MySQL
 * Criar db com nome es_project
+* sugestão: user e pass: es_project
 * Carregar o es_project.dump
 
 ## Build
