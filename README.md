@@ -9,5 +9,5 @@
 * mvn clean compile assembly:single test
 
 ## Run
-* java -cp target/ESMaven-1.0-jar-with-dependencies.jar main.Main
+* java -cp target/ESMaven-1.0-jar-with-dependencies.jar es_project.ProjectMain
 
