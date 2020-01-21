@@ -11,7 +11,7 @@ public class ProjectMain {
 
     public static void main(String[] args) {
 
-        Model model = new Model("es_project", "es_maven", "es_maven");
+        Model model = new Model("es_project", "es_project", "es_project");
         ProjectGUI gui = new ProjectGUI(model);
 
         JFrame frame = new JFrame("ProjectGUI");
